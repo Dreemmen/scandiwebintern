@@ -35,7 +35,7 @@ require './autoleader.php';
         data: function() {
           return {
             inputs: [{name: 'sku',label: 'SKU',type: 'text',preval: 'XXXXXXXX',val: '', id: 'sku'},
-                     {name: 'title',label: 'Name',type: 'text',preval: 'Product name',val: '', id: 'name'},
+                     {name: 'name',label: 'Name',type: 'text',preval: 'Product name',val: '', id: 'name'},
                      {name: 'price',label: 'Price ($)',type: 'decimal',preval:'0.00',val: '', id: 'price'}],
             selected: 'DVD',
             sub_msg: {'DVD': "Please, provide DVD's size in megabytes (MB). 1 GB = 1000 MB",
@@ -142,7 +142,6 @@ require './autoleader.php';
       function trySubmit(){
          let data = new FormData(document.getElementById('product_form'));
          let prepared_data = Object.fromEntries(data.entries());
-         prepared_data.name = prepared_data.title;
          prepared_data.action = 'add_product';
          
          let requestOptions = {
