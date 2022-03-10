@@ -21,7 +21,7 @@ require './autoleader.php';
         </div>
     </header>
     <body>
-        <form id="editProduct" class="wrapper" onsubmit="event.preventDefault();">
+        <form id="product_form" class="wrapper" onsubmit="event.preventDefault();">
         </form>
     </body>
     <script src="https://unpkg.com/vue@3"></script>
@@ -34,9 +34,9 @@ require './autoleader.php';
       let me = Vue.createApp({
         data: function() {
           return {
-            inputs: [{name: 'sku',label: 'SKU',type: 'text',preval: 'XXXXXXXX',val: '',isValid: true},
-                     {name: 'title',label: 'Name',type: 'text',preval: 'Product name',val: '',isValid: true},
-                     {name: 'price',label: 'Price ($)',type: 'decimal',preval:'0.00',val: '',isValid: true}],
+            inputs: [{name: 'sku',label: 'SKU',type: 'text',preval: 'XXXXXXXX',val: '', id: 'sku'},
+                     {name: 'title',label: 'Name',type: 'text',preval: 'Product name',val: '', id: 'name'},
+                     {name: 'price',label: 'Price ($)',type: 'decimal',preval:'0.00',val: '', id: 'price'}],
             selected: 'DVD',
             sub_msg: {'DVD': "Please, provide DVD's size in megabytes (MB). 1 GB = 1000 MB",
                       'Furniture': "Please, provide dimensions in HxWxL format in centimetres",
@@ -50,7 +50,7 @@ require './autoleader.php';
 `
 <div  v-for="(arr, i) in inputs" :key="i"  class="form_line" >
     <label>{{arr.label}}</label>
-    <input-field :name="arr.name" v-model="arr.val" :type="arr.type" :preval="arr.preval" />
+    <input-field :name="arr.name" v-model="arr.val" :type="arr.type" :preval="arr.preval" :id="arr.name" />
 </div>
 <div class="form_line">
     <selector :select_name="sel_name" @option_changed="update_selected" v-model="selected" :id="sel_name"/>
@@ -79,7 +79,7 @@ require './autoleader.php';
 </select>
 <div  v-for="(input_arr, o) in case_inputs[this.selected]" :key="o"  class="form_line" >
     <label>{{input_arr.label}}</label>
-    <input-field  :name="input_arr.name" v-model="input_arr.val" :type="input_arr.type" :preval="input_arr.preval" />
+    <input-field  :name="input_arr.name" v-model="input_arr.val" :type="input_arr.type" :preval="input_arr.preval" :id="input_arr.name" />
 </div>
 `,
     props: ['modelValue','select_name'],
@@ -92,13 +92,13 @@ require './autoleader.php';
         return {
             dropdown_label: 'Type switcher',
             case_inputs: {
-                'DVD':       [ {name: 'size', label: 'Size (Mb)', type: 'decimal', preval: '0', val: ''}],
+                'DVD':       [ {name: 'size', label: 'Size (Mb)', type: 'decimal', preval: '0', id: 'size', val: ''}],
                 
-                'Furniture': [ {name: 'height', label: 'Height', type: 'decimal', preval: '0', val: ''},
-                               {name: 'width', label: 'Width', type: 'decimal', preval: '0', val: ''},
-                               {name: 'length', label: 'Length', type: 'decimal', preval: '0', val: ''}
+                'Furniture': [ {name: 'height', label: 'Height', type: 'decimal', preval: '0', id: 'height',  val: ''},
+                               {name: 'width', label: 'Width', type: 'decimal', preval: '0', id: 'width',  val: ''},
+                               {name: 'length', label: 'Length', type: 'decimal', preval: '0', id: 'length',  val: ''}
                              ],
-                'Book':      [ {name: 'weight', label: 'Weight', type: 'decimal', preval: '0', val: ''}]
+                'Book':      [ {name: 'weight', label: 'Weight', type: 'decimal', preval: '0', id: 'weight',  val: ''}]
             },
             selected: 'DVD'
         };
@@ -109,9 +109,9 @@ require './autoleader.php';
     me.component('input-field', {
         template:
 `
-<input :name="name" v-model="inputVal" :type="inputType" :min="(inputType==='number'?'0':null)" :placeholder="preval" required />
+<input :name="name" v-model="inputVal" :type="inputType" :id="id" :min="(inputType==='number'?'0':null)" :placeholder="preval" required />
 `,
-    props: ['name','type','preval','isValid','modelValue'],
+    props: ['name','type','preval','isValid','modelValue','id'],
     computed: {
         inputVal: {
             get(){
@@ -138,9 +138,9 @@ require './autoleader.php';
         }
     });
       
-    me.mount('#editProduct');
+    me.mount('#product_form');
       function trySubmit(){
-         let data = new FormData(document.getElementById('editProduct'));
+         let data = new FormData(document.getElementById('product_form'));
          let prepared_data = Object.fromEntries(data.entries());
          prepared_data.name = prepared_data.title;
          prepared_data.action = 'add_product';
