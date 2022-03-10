@@ -63,7 +63,7 @@ class Database extends PDO {
             $sql = 'DELETE FROM `' . $table . '` WHERE `'. $column .'` IN (\'' . implode('\',\'', $values). '\')';
 
             $request = $this->prepare($sql);
-            if($request->execute()) $counter = $counter + $request->rowCount();
+            if($request->execute()) $counter++;
         }
         return $counter;
     }
