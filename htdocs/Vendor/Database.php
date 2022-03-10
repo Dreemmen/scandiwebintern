@@ -56,10 +56,11 @@ class Database extends PDO {
         
         return $request->fetchAll(PDO::FETCH_ASSOC);
     }
+    
     public function delete($data, $table) {
         $counter = 0;
         foreach ($data as $column => $values){
-            $sql = 'DELETE FROM `' . $table . '` WHERE `'. $column .'` IN (' . implode(',', $values). ')';
+            $sql = 'DELETE FROM `' . $table . '` WHERE `'. $column .'` IN (\'' . implode('\',\'', $values). '\')';
 
             $request = $this->prepare($sql);
             if($request->execute()) $counter = $counter + $request->rowCount();
